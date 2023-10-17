@@ -1,4 +1,5 @@
 galaxy_info:
+  role_name: swap_file
   author: basicbind <https://github.com/basicbind> 
   description: Creates a swap file
   license: 'GPL-3.0-only'

@@ -11,38 +11,36 @@ None
 Role Variables
 --------------
 
-### swap_file_path
+```yaml
+---
+# Full path to swap file
+swap_file_path: '/swapfile'
 
-Full path for swap file
+#"present" creates the swap file, "absent" removes it
+swap_file_state: 'present'
 
-### swap_file_state [ present | absent ]
+# Size in human readable form as is understood by filter "human_to_bytes"
+# eg: 1G, 1M. Defaults to G
+swap_file_size: '1G'
 
-"present" creates the swap file, "absent" removes it
+# Priority for the swap file. "Higher values indicate higher priority".
+swap_file_priority: 0 
 
-### swap_file_size
+# A warning will be displayed if working on a btrfs filesystem and
+# this variable is not set to false
 
-Size of swap file in human readable form. eg: 1M, 1G. Any value understood by filter "human_to_bytes"
-
-### swap_file_priority [ -1 to 32767 ]
-
-Priority for the swap file. "Higher values indicate higher priority". "man swapon"
-
-### swap_file_show_btrfs_warn [ true | false ]
-
-A warning will be displayed if working on a btrfs filesystem and
-this variable is not set to false
-
-When using btrfs, some operations such as snapshots will fail
-on a subvolume while a swap file is active on said subvolume.
-Consider creating a subvolume exclusively for the swap file
-if you have not done so already.
-https://btrfs.readthedocs.io/en/latest/Swapfile.html
-
-Also note that if you deactivate a swapfile on btrfs and then
-do a snapshot on the subvolume, you will no longer be able to
-use the same swapfile as swap. You will have to create another
-swapfile after the snapshot operation
-
+# When using btrfs, some operations such as snapshots will fail
+# on a subvolume while a swap file is active on said subvolume.
+# Consider creating a subvolume exclusively for the swap file
+# if you have not done so already.
+# https://btrfs.readthedocs.io/en/latest/Swapfile.html
+#
+# Also note that if you deactivate a swapfile on btrfs and then
+# do a snapshot on the subvolume, you will no longer be able to
+# use the same swapfile as swap. You will have to recreate the
+# swapfile after the snapshot operation
+swap_file_show_btrfs_warn: true 
+```
 
 Dependencies
 ------------
@@ -51,15 +49,17 @@ None
 
 Example Playbook
 ----------------
+```yaml
+---
+- hosts: servers
+  vars:
+    swap_file_path: '/swapfile'
+    swap_file_state: 'present'
+    swap_file_size: '2G'
 
-    - hosts: servers
-      vars:
-        swap_file_path: '/swapfile'
-        swap_file_state: 'present'
-        swap_file_size: '2G'
-
-      roles:
-        - basicbind.swap_file
+  roles:
+    - basicbind.swap_file
+```
 
 License
 -------
@@ -69,3 +69,4 @@ GPL-3.0-only
 Author Information
 ------------------
 basicbind - https://github.com/basicbind
+
