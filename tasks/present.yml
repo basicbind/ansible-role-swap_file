@@ -43,13 +43,7 @@
       # 2 indicates blkid couldn't identify device
       failed_when: '__swap_file_blkid_path_res["rc"] not in [0,2]' 
 
-    # If "file" returns a string with "swap file" in it
-    # we assume that mkswap has already been run on the
-    # file. Otherwise we assume we need to run mkswap
-    #
-    # There may be a more robust way to check if the
-    # file has swap area setup on it
-    - name: 'Run mkswap on the file if file is not identified as "swap"'
+    - name: 'Run mkswap on the file if it is not identified as "swap"'
       ansible.builtin.command:
         argv:
           - 'mkswap'

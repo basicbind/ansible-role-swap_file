@@ -39,8 +39,8 @@
   ansible.builtin.fail:
     msg: "Swap file exists but is not a regular file. Aborting."
   when:
-    - __swap_file_stat_path_res["stat"]["exists"]
-    - __swap_file_stat_path_res["stat"]["isreg"] is not defined
+    - '__swap_file_stat_path_res["stat"]["exists"]'
+    - 'not __swap_file_stat_path_res["stat"]["isreg"]'
 
 - name: Include present
   ansible.builtin.include_tasks: 'present.yml'
