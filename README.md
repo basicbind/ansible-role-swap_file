@@ -11,23 +11,23 @@ None
 Role Variables
 --------------
 
-# swap_file_path
+### swap_file_path
 
 Full path for swap file
 
-# swap_file_state [ present | absent ]
+### swap_file_state [ present | absent ]
 
 "present" creates the swap file, "absent" removes it
 
-# swap_file_size
+### swap_file_size
 
 Size of swap file in human readable form. eg: 1M, 1G. Any value understood by filter "human_to_bytes"
 
-# swap_file_priority [ -1 to 32767 ]
+### swap_file_priority [ -1 to 32767 ]
 
 Priority for the swap file. "Higher values indicate higher priority". "man swapon"
 
-# swap_file_show_btrfs_warn [ true | false ]
+### swap_file_show_btrfs_warn [ true | false ]
 
 A warning will be displayed if working on a btrfs filesystem and
 this variable is not set to false
