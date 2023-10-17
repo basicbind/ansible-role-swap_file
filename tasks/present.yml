@@ -29,13 +29,19 @@
             argv: '{{ __swap_file_create_args }}'
           changed_when: true
 
-    - name: Test if filesystem is already on file
+    - name: Get filesystem type on file if any
       ansible.builtin.command:
         argv:
-          - file
+          - 'blkid'
+          - '-s'
+          - 'TYPE'
+          - '-o'
+          - 'value'
           - '{{ swap_file_path }}'
-      register: __swap_file_file_path_res
+      register: __swap_file_blkid_path_res
       changed_when: false
+      # 2 indicates blkid couldn't identify device
+      failed_when: '__swap_file_blkid_path_res["rc"] not in [0,2]' 
 
     # If "file" returns a string with "swap file" in it
     # we assume that mkswap has already been run on the
@@ -43,13 +49,13 @@
     #
     # There may be a more robust way to check if the
     # file has swap area setup on it
-    - name: 'Run mkswap on the file if "file" does not return "swap file"'
+    - name: 'Run mkswap on the file if file is not identified as "swap"'
       ansible.builtin.command:
         argv:
           - 'mkswap'
           - '{{ swap_file_path }}'
       changed_when: true
-      when: 'not __swap_file_file_path_res["stdout"] is search("swap file")'
+      when: '__swap_file_blkid_path_res["stdout"] != "swap"'
 
     - name: Ensure swap file has correct permissions
       ansible.builtin.file:

@@ -10,7 +10,7 @@ swap_file_state: 'present'
 swap_file_size: '1G'
 
 #Priority for the swap file. "Higher values indicate higher priority".
-swap_file_priority: 0 
+swap_file_priority: -1 
 
 #A warning will be displayed if working on a btrfs filesystem and
 #this variable is not set to false

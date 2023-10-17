@@ -6,7 +6,7 @@ Creates a swap file
 Requirements
 ------------
 
-None
+Listed in requirements.yml
 
 Role Variables
 --------------
