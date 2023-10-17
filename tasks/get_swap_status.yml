@@ -1,0 +1,13 @@
+---
+# Get status of swap and populate swap_file_status var
+- name: Check swap status
+  ansible.builtin.command: 'swapon --show --noheadings --bytes'
+  register: __swap_file_status_res
+  changed_when: false
+
+# TODO set priority in status
+- name: Set swap status fact
+  ansible.builtin.set_fact:
+    __swap_file_status:
+      is_on: '{{ __swap_file_status_res["stdout"] is regex("^" ~ swap_file_path ~ "\s", multiline=True) }}'
+      

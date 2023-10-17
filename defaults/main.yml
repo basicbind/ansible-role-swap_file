@@ -1,0 +1,22 @@
+---
+swap_file_path: '/swapfile'
+swap_file_state: 'present'
+
+# Size in human readable form as is understood by
+# filter "human_to_bytes"
+# eg: 1G, 1M. Defaults to G
+swap_file_size: '1G'
+
+swap_file_priority: '-1'
+
+# A warning will be displayed if this variable is not set to false
+#
+# When using btrfs, some operations such as snapshots will fail
+# on a subvolume while a swap file is active on said subvolume.
+# https://btrfs.readthedocs.io/en/latest/Swapfile.html
+#
+# Also note that if you deactivate a swapfile on btrfs and then
+# do a snapshot on the subvolume, you will no longer be able to
+# use the same swapfile as swap. You will have to create another
+# swapfile after the snapshot operation
+swap_file_show_btrfs_warn: true 

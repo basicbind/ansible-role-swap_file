@@ -1,0 +1,56 @@
+---
+# We use "stat" instead of "df" because df does not
+# appear to work correctly on btrfs subvolumes not
+# mounted independently
+- name: Determine type of filesystem swap file is to be put on
+  ansible.builtin.command:
+    argv:
+      - 'stat'
+      - '-f'
+      - '-c'
+      - '%T'
+      - '{{ swap_file_path | dirname }}'
+  changed_when: false
+  check_mode: false
+  register: __swap_file_dir_stat_res
+
+- name: Set __swap_file_fs_type
+  ansible.builtin.set_fact:
+    __swap_file_fs_type: '{{ __swap_file_dir_stat_res["stdout_lines"][0] }}'
+
+- debug:
+    var: '__swap_file_fs_type'
+    verbosity: 2
+
+- name: Warn if user hasn't disabled btrfs warn message
+  ansible.builtin.fail:
+    msg: '{{ __swap_file_btrfs_warn_msg }}'
+  when:
+    - '__swap_file_fs_type == "btrfs"'
+    - 'swap_file_show_btrfs_warn'
+  ignore_errors: true
+
+- name: Test if swap file already exists
+  ansible.builtin.stat:
+    path: '{{ swap_file_path }}'
+  register: __swap_file_stat_path_res
+
+- name: Fail if swap file exists but is not a regular file
+  ansible.builtin.fail:
+    msg: "Swap file exists but is not a regular file. Aborting."
+  when:
+    - __swap_file_stat_path_res["stat"]["exists"]
+    - __swap_file_stat_path_res["stat"]["isreg"] is not defined
+
+- name: Include present
+  ansible.builtin.include_tasks: 'present.yml'
+  when: swap_file_state == "present"
+
+- name: Include absent
+  ansible.builtin.include_tasks: 'absent.yml'
+  when: 'swap_file_state == "absent"'
+
+- name: state error
+  ansible.builtin.fail:
+    msg: 'Unknown state {{ swap_file_state }}'
+  when: 'swap_file_state not in ["present", "absent"]'

@@ -1,0 +1,8 @@
+---
+- name: Get swap status
+  ansible.builtin.include_tasks: 'get_swap_status.yml'
+
+- name: Turn off swap
+  ansible.builtin.command: 'swapoff {{ swap_file_path }}'
+  changed_when: true
+  when: '__swap_file_status["is_on"]'

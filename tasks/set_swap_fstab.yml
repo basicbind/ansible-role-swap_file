@@ -1,0 +1,7 @@
+- name: Ensure swap file entry is in fstab
+  ansible.posix.mount:
+    path: none
+    src: '{{ swap_file_path }}'
+    fstype: 'swap'
+    opts: 'defaults,pri={{ swap_file_priority }}'
+    state: '{{ __swap_file_fstab_state }}'

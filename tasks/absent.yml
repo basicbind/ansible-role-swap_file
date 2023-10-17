@@ -1,0 +1,13 @@
+- name: Disable and remove swap file block
+  block:
+    - name: Make swap file unavailable for swap
+      ansible.builtin.include_tasks: 'set_swap_off.yml'
+    - name: Remove fstab entry
+      ansible.builtin.include_tasks: 'set_swap_fstab.yml'
+      vars:
+        __swap_file_fstab_state: absent
+    - name: Remove swap file
+      ansible.builtin.file:
+        path: '{{ swap_file_path }}'
+        state: absent
+

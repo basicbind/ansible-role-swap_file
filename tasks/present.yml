@@ -1,0 +1,68 @@
+---
+# Tasks to ensure swap is present
+- name: Ensure swap is present block
+  vars:
+    __swap_file_create_args: '{{ __swap_file_create_args_list[__swap_file_fs_type] | default(__swap_file_create_args_list["default"]) }}'
+  block:
+    # We create the swap file if the file doesn't exist
+    # or the size isn't correct
+    - name: Create swap file block
+      when: >
+        (not __swap_file_stat_path_res["stat"]["exists"])
+        or
+        (__swap_file_stat_path_res["stat"]["size"] | int != __swap_file_size_in_b | int)
+      block:
+        # We don't want to overwrite a possibly already existing swap file
+        # if it is currently in use. So we make it unavailable with swapoff.
+        - name: Swapoff
+          ansible.builtin.include_tasks: 'set_swap_off.yml'
+
+        - name: Remove swap file if it exists
+          ansible.builtin.file:
+            path: '{{ swap_file_path }}'
+            state: absent
+    
+        # We don't use "creates" since this should always
+        # run and create a new file in this block
+        - name: Create swap file
+          ansible.builtin.command:
+            argv: '{{ __swap_file_create_args }}'
+          changed_when: true
+
+    - name: Test if filesystem is already on file
+      ansible.builtin.command:
+        argv:
+          - file
+          - '{{ swap_file_path }}'
+      register: __swap_file_file_path_res
+      changed_when: false
+
+    # If "file" returns a string with "swap file" in it
+    # we assume that mkswap has already been run on the
+    # file. Otherwise we assume we need to run mkswap
+    #
+    # There may be a more robust way to check if the
+    # file has swap area setup on it
+    - name: 'Run mkswap on the file if "file" does not return "swap file"'
+      ansible.builtin.command:
+        argv:
+          - 'mkswap'
+          - '{{ swap_file_path }}'
+      changed_when: true
+      when: 'not __swap_file_file_path_res["stdout"] is search("swap file")'
+
+    - name: Ensure swap file has correct permissions
+      ansible.builtin.file:
+        path: '{{ swap_file_path }}'
+        owner: root
+        group: root
+        mode: '0600'
+        state: 'file'
+
+    - name: Add swap fstab entry
+      ansible.builtin.include_tasks: 'set_swap_fstab.yml'
+      vars:
+        __swap_file_fstab_state: present
+
+    - name: Make swapfile available for swap
+      ansible.builtin.include_tasks: 'set_swap_on.yml'

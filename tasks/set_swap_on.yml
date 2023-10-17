@@ -1,0 +1,15 @@
+- name: Get swap status
+  ansible.builtin.include_tasks: 'get_swap_status.yml'
+
+# TODO Check priorioty and swapoff swapon if
+# differs from requested priority
+- name: Make swap file available if it is currently not
+  ansible.builtin.command:
+    argv:
+      - 'swapon'
+      - '-p'
+      - '{{ swap_file_priority }}'
+      - '{{ swap_file_path }}'
+  changed_when: true
+  when:
+    - not __swap_file_status["is_on"]

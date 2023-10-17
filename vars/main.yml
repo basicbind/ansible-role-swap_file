@@ -1,0 +1,28 @@
+---
+__swap_file_size_in_b: '{{ swap_file_size | human_to_bytes(default_unit="G") }}'
+__swap_file_size_in_m: '{{ ((__swap_file_size_in_b | int) / (1024 * 1024)) | int }}'
+
+__swap_file_dd_rw_size: '1MiB'
+__swap_file_create_args_list:
+  default:
+    - 'dd'
+    - 'if=/dev/zero'
+    - 'of={{ swap_file_path }}'
+    - 'bs={{ __swap_file_dd_rw_size }}'
+    - 'count={{ __swap_file_size_in_m }}'
+  btrfs:
+    - 'btrfs'
+    - 'filesystem'
+    - 'mkswapfile'
+    - '--size'
+    - '{{ __swap_file_size_in_m }}m'
+    - '{{ swap_file_path }}'
+
+__swap_file_btrfs_warn_msg: |
+    When using btrfs some operations such as snapshots will fail
+    while a swap file is active on said subvolume. Consider creating
+    a dedicated subvolume for the swapfile if you haven't already.
+    https://btrfs.readthedocs.io/en/latest/Swapfile.html
+
+    Set swap_file_show_btrfs_warn to false to turn off this warning
+
