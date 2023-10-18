@@ -1,7 +1,7 @@
 - name: Get swap status
   ansible.builtin.include_tasks: 'get_swap_status.yml'
 
-# TODO Check priorioty and swapoff swapon if
+# TODO Check priority and swapoff swapon if
 # differs from requested priority
 - name: Make swap file available if it is currently not
   ansible.builtin.command:

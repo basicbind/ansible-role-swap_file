@@ -16,11 +16,7 @@
 
 - name: Set __swap_file_fs_type
   ansible.builtin.set_fact:
-    __swap_file_fs_type: '{{ __swap_file_dir_stat_res["stdout_lines"][0] }}'
-
-- debug:
-    var: '__swap_file_fs_type'
-    verbosity: 2
+    __swap_file_fs_type: '{{ __swap_file_dir_stat_res["stdout"] }}'
 
 - name: Warn if user hasn't disabled btrfs warn message
   ansible.builtin.fail:
