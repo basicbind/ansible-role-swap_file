@@ -10,4 +10,3 @@
       ansible.builtin.file:
         path: '{{ swap_file_path }}'
         state: absent
-

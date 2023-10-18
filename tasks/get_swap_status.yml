@@ -10,4 +10,3 @@
   ansible.builtin.set_fact:
     __swap_file_status:
       is_on: '{{ __swap_file_status_res["stdout"] is regex("^" ~ swap_file_path ~ "\s", multiline=True) }}'
-      

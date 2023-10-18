@@ -24,7 +24,7 @@
   when:
     - '__swap_file_fs_type == "btrfs"'
     - 'swap_file_show_btrfs_warn'
-  ignore_errors: true
+  ignore_errors: true # noqa: ignore-errors
 
 - name: Test if swap file already exists
   ansible.builtin.stat:
@@ -46,7 +46,7 @@
   ansible.builtin.include_tasks: 'absent.yml'
   when: 'swap_file_state == "absent"'
 
-- name: state error
+- name: State error
   ansible.builtin.fail:
     msg: 'Unknown state {{ swap_file_state }}'
   when: 'swap_file_state not in ["present", "absent"]'

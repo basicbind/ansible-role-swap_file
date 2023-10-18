@@ -25,4 +25,4 @@ swap_file_priority: -1
 # do a snapshot on the subvolume, you will no longer be able to
 # use the same swapfile as swap. You will have to recreate the
 # swapfile after the snapshot operation
-swap_file_show_btrfs_warn: true 
+swap_file_show_btrfs_warn: true

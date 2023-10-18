@@ -21,7 +21,7 @@
           ansible.builtin.file:
             path: '{{ swap_file_path }}'
             state: absent
-    
+
         # We don't use "creates" since this should always
         # run and create a new file in this block
         - name: Create swap file
@@ -41,7 +41,7 @@
       register: __swap_file_blkid_path_res
       changed_when: false
       # 2 indicates blkid couldn't identify device
-      failed_when: '__swap_file_blkid_path_res["rc"] not in [0,2]' 
+      failed_when: '__swap_file_blkid_path_res["rc"] not in [0,2]'
 
     - name: 'Run mkswap on the file if it is not identified as "swap"'
       ansible.builtin.command:
