@@ -57,6 +57,7 @@
         owner: root
         group: root
         mode: '0600'
+        setype: 'swapfile_t'
         state: 'file'
 
     - name: Add swap fstab entry
