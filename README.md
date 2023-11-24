@@ -1,5 +1,9 @@
+
 swap_file
 =========
+This role is no longer being maintained. 
+Consider using this collection instead
+https://github.com/basicbind/ansible-collection-basicbind.swap_file
 
 Creates a swap file
 
