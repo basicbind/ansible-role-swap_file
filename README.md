@@ -2,7 +2,7 @@
 swap_file
 =========
 This role is no longer being maintained. 
-Consider using this collection instead
+Consider using my swap_file collection instead
 https://github.com/basicbind/ansible-collection-basicbind.swap_file
 
 Creates a swap file
